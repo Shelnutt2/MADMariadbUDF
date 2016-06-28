@@ -1,4 +1,4 @@
-# MADMariadbUDF
+# MADMariadbUDF [![Build Status](https://travis-ci.org/Shelnutt2/MADMariadbUDF.svg?branch=master)](https://travis-ci.org/Shelnutt2/MADMariadbUDF)
 A User Defined Function which computes the Median absolute deviation
 
 ## Building
