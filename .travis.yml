@@ -1,22 +1,60 @@
-# Enable C++ support
+# Use new trusty images, should yield newer compilers and packages
+sudo: required
+dist: precise
 language: cpp
-# Compiler selection
-compiler:
-  - clang
-  - gcc
+
+addons:
+  mariadb: '10.1'
+
+matrix:
+  include:
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.9
+      env: COMPILER=g++-4.9
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+      env: COMPILER=g++-5
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.6
+          packages:
+            - clang-3.6
+      env: COMPILER=clang++-3.6
+    - compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.7
+          packages:
+            - clang-3.7
+      env: COMPILER=clang++-3.7
+
 before_install:
-  - sudo apt-get install lcov rubygems
+  - sudo apt-get update -qq
+  - sudo apt-get install -y libopencv-dev lcov rubygems
   - gem install lcoveralls
+
 # Build steps
 script:
   - mkdir build
   - cd build
-  - cmake .. && make
+  - cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=$COMPILER .. && make
   - make test
   - make mad_tests_coverage
 
 after_success:
   - lcoveralls
-# Ubuntu 14.04 Trusty support
-sudo: required
-dist: trusty
