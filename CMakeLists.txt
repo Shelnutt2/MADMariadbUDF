@@ -21,5 +21,12 @@ ADD_EXECUTABLE(mad_tests src/mad_test.cpp)
 include_directories("include")
 create_test(mad_tests)
 
+# Set CodeCoverage
+include(CodeCoverage)
+
+setup_target_for_coverage(mad_tests_coverage mad_tests "coverage")
+
 ##use c++11
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG} -Wall -g -fprofile-arcs -ftest-coverage -O0 -coverage")
