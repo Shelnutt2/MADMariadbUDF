@@ -38,6 +38,7 @@ typedef long long longlong;
 #include <mysql.h>
 #include <m_ctype.h>
 #include <m_string.h>
+#include <mad.hpp>
 
 /*#ifdef HAVE_DLOPEN*/
 
@@ -55,22 +56,11 @@ double mad( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char *error );
 /*long long mad( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char *error );*/
 }
 
-
 struct mad_data
 {
   std::vector<double> *double_values;
   std::vector<long long> *int_values;
 };
-
-// Get the median of an unordered set of numbers of arbitrary
-// type (this will modify the underlying dataset).
-template <typename It>
-typename std::iterator_traits<It>::value_type Median(It begin, It end)
-{
-    auto size = std::distance(begin, end);
-    std::nth_element(begin, begin + size / 2, end);
-    return *std::next(begin, size / 2);
-}
 
 my_bool mad_init( UDF_INIT* initid, UDF_ARGS* args, char* message )
 {
@@ -165,19 +155,9 @@ double mad( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char* is_error )
   mad_data* buffer = (mad_data*)initid->ptr;
   double mad;
   if (buffer->double_values != NULL) {
-    double med = Median(buffer->double_values->begin(), buffer->double_values->end());
-    std::vector<double> differences;
-    for (auto it: *buffer->int_values) {
-      differences.push_back(std::abs(med - it));
-    }
-    mad = Median(differences.begin(), differences.end());
+    mad = Mad(buffer->double_values);
   } else {
-    long long med = Median(buffer->int_values->begin(), buffer->int_values->end());
-    std::vector<long long> differences;
-    for (auto it: *buffer->int_values) {
-      differences.push_back(std::abs(med - it));
-    }
-    mad = Median(differences.begin(), differences.end());
+    mad = Mad(buffer->int_values);
   }
   return mad;
 }
