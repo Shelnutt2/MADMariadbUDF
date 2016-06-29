@@ -18,6 +18,7 @@ script:
   - cmake -DCMAKE_BUILD_TYPE=Debug .. && make
   - make test
   - make mad_tests_coverage
+  - cd ../
 
 after_success:
   - lcoveralls
