@@ -34,16 +34,12 @@ typedef long long longlong;
 #include <my_sys.h>
 #endif
 #include <vector>
+#include <iostream>
 #include <algorithm>
 #include <mysql.h>
 #include <m_ctype.h>
 #include <m_string.h>
 #include <mad.hpp>
-
-/*#ifdef HAVE_DLOPEN*/
-
-
-#define BUFFERSIZE 1024
 
 
 extern "C" {
@@ -142,11 +138,11 @@ void mad_add( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char* is_error )
   if (args->args[0]!=NULL)
   {
     mad_data *buffer = (mad_data*)initid->ptr;
-    if (args->arg_type[0]==REAL_RESULT)
+    if (args->arg_type[0]==REAL_RESULT || args->arg_type[0]==DECIMAL_RESULT)
     {
       buffer->double_values->push_back(*((double*)args->args[0]));
     }
-    else if (args->arg_type[1]==INT_RESULT)
+    else if (args->arg_type[0]==INT_RESULT)
     {
       buffer->int_values->push_back(*((long long*)args->args[0]));
     }
@@ -157,10 +153,13 @@ double mad( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char* is_error )
 {
   mad_data* buffer = (mad_data*)initid->ptr;
   double mad;
-  if (buffer->double_values != NULL) {
+  if (buffer->double_values != NULL && buffer->double_values->size() > 0) {
     mad = Mad(buffer->double_values);
-  } else {
+  } else if (buffer->int_values != NULL && buffer->int_values->size() > 0) {
     mad = Mad(buffer->int_values);
+  } else {
+    std::cerr << "mad() internal error, all vectors were null in computation" << std::endl;
+    *is_error = 1;
   }
   return mad;
 }
