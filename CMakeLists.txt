@@ -10,6 +10,8 @@ link_directories(${MYSQL_LIB_DIR})
 include_directories("include")
 ADD_LIBRARY(mad_udf MODULE src/mad_udf.cpp)
 
+install(TARGETS mad_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/mysql/plugin" COMPONENT libraries)
+
 # Unit Tests
 enable_testing()
 macro (create_test target)

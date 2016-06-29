@@ -15,13 +15,11 @@ make
 
 ```sh
 make install
-mysql -p
-CREATE AGGREGATE FUNCTION mad RETURNS REAL SONAME 'libmad_udf.so';
+mysql -p < install.sql
 ```
 
 ## Removing
 
 ```sh
-mysql -p
-DROP FUNCTION mad;
+mysql -p < uninstall.sql
 ```
