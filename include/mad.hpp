@@ -14,11 +14,11 @@
 // Get the median of an unordered set of numbers of arbitrary
 // type (this will modify the underlying dataset).
 template <typename T>
-typename std::iterator_traits<T>::value_type Median(T begin, T end)
+T Median(std::vector<T> *v)
 {
-    auto size = std::distance(begin, end);
-    std::nth_element(begin, begin + size / 2, end);
-    return *std::next(begin, size / 2);
+    auto size = std::distance(v->begin(), v->end());
+    std::nth_element(v->begin(), v->begin() + size / 2, v->end());
+    return *std::next(v->begin(), size / 2);
 }
 
 // Get the mad of an unordered set of numbers of arbitrary
@@ -26,10 +26,10 @@ typename std::iterator_traits<T>::value_type Median(T begin, T end)
 template <typename T>
 T Mad(std::vector<T> *v)
 {
-    T med = Median(v->begin(), v->end());
+    T med = Median(v);
     std::vector<T> mads;
     for (auto it : *v) {
-	mads.push_back(T(std::abs(med - it)));
+	     mads.push_back(T(std::abs(med - it)));
     }
     auto size = std::distance(mads.begin(), mads.end());
     std::nth_element(mads.begin(), mads.begin() + size / 2, mads.end());
