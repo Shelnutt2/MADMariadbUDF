@@ -70,10 +70,13 @@ my_bool mad_init( UDF_INIT* initid, UDF_ARGS* args, char* message )
     return 1;
   }
 
-  if (args->arg_type[0]!=REAL_RESULT && args->arg_type[1]!=INT_RESULT)
+  if (args->arg_type[0]!=REAL_RESULT && args->arg_type[0]!=INT_RESULT && args->arg_type[0] != DECIMAL_RESULT)
   {
-    strcpy(message,"mad() requires a real or integer as parameter 1");
-       return 1;
+    if (args->arg_type[0] == STRING_RESULT)
+      strcpy(message,"mad() requires a real or integer as parameter 1, received STRING");
+    else
+      strcpy(message,"mad() requires a decimal, real or integer as parameter 1");
+    return 1;
   }
 
   initid->decimals = NOT_FIXED_DEC;
