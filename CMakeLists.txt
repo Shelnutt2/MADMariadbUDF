@@ -19,7 +19,7 @@ macro (create_test target)
 endmacro (create_test)
 
 project(mad_tests)
-ADD_EXECUTABLE(mad_tests src/mad_test.cpp)
+ADD_EXECUTABLE(mad_tests tests/mad_test.cpp)
 include_directories("include")
 create_test(mad_tests)
 
