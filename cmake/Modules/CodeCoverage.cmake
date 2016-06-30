@@ -132,7 +132,7 @@ FUNCTION(SETUP_TARGET_FOR_COVERAGE _targetname _testrunner _outputname)
 	ENDIF() # NOT GENHTML_PATH
 
 	SET(coverage_info "${CMAKE_BINARY_DIR}/${_outputname}.info")
-	SET(coverage_cleaned "${coverage_info}.cleaned")
+	SET(coverage_cleaned "${CMAKE_BINARY_DIR}/${_outputname}_cleaned.info")
 
 	# Setup target
 	ADD_CUSTOM_TARGET(${_targetname}
@@ -145,9 +145,9 @@ FUNCTION(SETUP_TARGET_FOR_COVERAGE _targetname _testrunner _outputname)
 
 		# Capturing lcov counters and generating report
 		COMMAND ${LCOV_PATH} --directory . --capture --output-file ${coverage_info}
-		COMMAND ${LCOV_PATH} --remove ${coverage_info} 'tests/*' '/usr/*' --output-file ${coverage_cleaned}
+		COMMAND ${LCOV_PATH} --remove ${coverage_info} 'include/catch.hpp' 'tests/*' '/usr/*' --output-file ${coverage_cleaned}
 		COMMAND ${GENHTML_PATH} -o ${_outputname} ${coverage_cleaned}
-		#COMMAND ${CMAKE_COMMAND} -E remove ${coverage_info} ${coverage_cleaned}
+		COMMAND ${CMAKE_COMMAND} -E remove ${coverage_info}
 
 		WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 		COMMENT "Resetting code coverage counters to zero.\nProcessing code coverage counters and generating report."
