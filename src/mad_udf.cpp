@@ -79,6 +79,8 @@ my_bool mad_init( UDF_INIT* initid, UDF_ARGS* args, char* message )
   initid->maybe_null = 1;
 
   mad_data *buffer = new mad_data;
+  buffer->double_values = NULL;
+  buffer->int_values = NULL;
   initid->ptr = (char*)buffer;
 
   return 0;
