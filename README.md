@@ -5,6 +5,8 @@ A User Defined Function which computes the Median absolute deviation
 ## Building
 
 ```sh
+git clone https://github.com/Shelnutt2/MADMariadbUDF.git
+cd MADMariadbUDF
 mkdir build
 cd build
 cmake ..
