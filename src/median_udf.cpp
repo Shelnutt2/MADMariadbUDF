@@ -3,19 +3,19 @@
   Copyright Seth Shelnutt 2016-06-27
   Licensed Under the GPL v3 or later
 
-  returns the mad of the values in a distribution
+  returns the median of the values in a distribution
 
   input parameters:
   data (real)
 
   output:
-  mad value of the distribution (real)
+  median value of the distribution (real)
 
   registering the function:
-  CREATE AGGREGATE FUNCTION mad RETURNS REAL SONAME 'libmad_udf.so';
+  CREATE AGGREGATE FUNCTION median RETURNS REAL SONAME 'libmad_udf.so';
 
   getting rid of the function:
-  DROP FUNCTION mad;
+  DROP FUNCTION median;
 */
 
 
@@ -43,42 +43,42 @@ typedef long long longlong;
 
 
 extern "C" {
-my_bool mad_init( UDF_INIT* initid, UDF_ARGS* args, char* message );
-void mad_deinit( UDF_INIT* initid );
-void mad_clear( UDF_INIT* initid, char* is_null, char *error );
-void mad_reset( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char *error );
-void mad_add( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char *error );
-double mad( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char *error );
-/*long long mad( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char *error );*/
+my_bool median_init( UDF_INIT* initid, UDF_ARGS* args, char* message );
+void median_deinit( UDF_INIT* initid );
+void median_clear( UDF_INIT* initid, char* is_null, char *error );
+void median_reset( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char *error );
+void median_add( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char *error );
+double median( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char *error );
+/*long long median( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char *error );*/
 }
 
-struct mad_data
+struct median_data
 {
   std::vector<double> *double_values;
   std::vector<long long> *int_values;
 };
 
-my_bool mad_init( UDF_INIT* initid, UDF_ARGS* args, char* message )
+my_bool median_init( UDF_INIT* initid, UDF_ARGS* args, char* message )
 {
   if (args->arg_count != 1)
   {
-    strcpy(message,"wrong number of arguments: mad() requires one argument");
+    strcpy(message,"wrong number of arguments: median() requires one argument");
     return 1;
   }
 
   if (args->arg_type[0]!=REAL_RESULT && args->arg_type[0]!=INT_RESULT && args->arg_type[0] != DECIMAL_RESULT)
   {
     if (args->arg_type[0] == STRING_RESULT)
-      strcpy(message,"mad() requires a real or integer as parameter 1, received STRING");
+      strcpy(message,"median() requires a real or integer as parameter 1, received STRING");
     else
-      strcpy(message,"mad() requires a decimal, real or integer as parameter 1");
+      strcpy(message,"median() requires a decimal, real or integer as parameter 1");
     return 1;
   }
 
   initid->decimals = NOT_FIXED_DEC;
   initid->maybe_null = 1;
 
-  mad_data *buffer = new mad_data;
+  median_data *buffer = new median_data;
   buffer->double_values = NULL;
   buffer->int_values = NULL;
   initid->ptr = (char*)buffer;
@@ -87,9 +87,9 @@ my_bool mad_init( UDF_INIT* initid, UDF_ARGS* args, char* message )
 }
 
 
-void mad_deinit( UDF_INIT* initid )
+void median_deinit( UDF_INIT* initid )
 {
-  mad_data *buffer = (mad_data*)initid->ptr;
+  median_data *buffer = (median_data*)initid->ptr;
 
   if (buffer->double_values != NULL)
   {
@@ -105,9 +105,9 @@ void mad_deinit( UDF_INIT* initid )
 }
 
 
-void mad_clear( UDF_INIT* initid, char* is_null, char* is_error )
+void median_clear( UDF_INIT* initid, char* is_null, char* is_error )
 {
-  mad_data *buffer = (mad_data*)initid->ptr;
+  median_data *buffer = (median_data*)initid->ptr;
   *is_null = 0;
   *is_error = 0;
 
@@ -128,18 +128,18 @@ void mad_clear( UDF_INIT* initid, char* is_null, char* is_error )
 }
 
 
-void mad_reset( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char* is_error )
+void median_reset( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char* is_error )
 {
-  mad_clear(initid, is_null, is_error);
-  mad_add( initid, args, is_null, is_error );
+  median_clear(initid, is_null, is_error);
+  median_add( initid, args, is_null, is_error );
 }
 
 
-void mad_add( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char* is_error )
+void median_add( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char* is_error )
 {
   if (args->args[0]!=NULL)
   {
-    mad_data *buffer = (mad_data*)initid->ptr;
+    median_data *buffer = (median_data*)initid->ptr;
     if (args->arg_type[0]==REAL_RESULT || args->arg_type[0]==DECIMAL_RESULT)
     {
       buffer->double_values->push_back(*((double*)args->args[0]));
@@ -151,17 +151,26 @@ void mad_add( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char* is_error )
   }
 }
 
-double mad( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char* is_error )
+double median( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char* is_error )
 {
-  mad_data* buffer = (mad_data*)initid->ptr;
-  double mad;
+  median_data* buffer = (median_data*)initid->ptr;
+  double median;
   if (buffer->double_values != NULL && buffer->double_values->size() > 0) {
-    mad = Mad(buffer->double_values);
+    median = Median(buffer->double_values);
   } else if (buffer->int_values != NULL && buffer->int_values->size() > 0) {
-    mad = Mad(buffer->int_values);
+    median = Median(buffer->int_values);
   } else {
-    std::cerr << "mad() internal error, all vectors were null in computation" << std::endl;
+    std::cerr << "median() internal error, all vectors were null in computation" << std::endl;
     *is_error = 1;
   }
-  return mad;
+  return median;
 }
+
+/*long long median( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char* is_error )
+{
+  median_data* buffer = (median_data*)initid->ptr;
+  return median(buffer->int_values->begin(), buffer->int_values->end());
+}*/
+
+
+/* #endif */
