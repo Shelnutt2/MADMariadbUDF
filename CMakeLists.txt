@@ -8,7 +8,7 @@ include_directories(${MYSQL_INCLUDE_DIR})
 link_directories(${MYSQL_LIB_DIR})
 
 include_directories("include")
-ADD_LIBRARY(mad_udf MODULE src/mad_udf.cpp)
+ADD_LIBRARY(mad_udf MODULE src/mad_udf.cpp src/median_udf.cpp)
 
 install(TARGETS mad_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/mysql/plugin" COMPONENT libraries)
 

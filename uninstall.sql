@@ -1,1 +1,2 @@
 DROP FUNCTION mad;
+DROP FUNCTION median;
