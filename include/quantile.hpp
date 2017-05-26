@@ -7,6 +7,8 @@
 
 #include <vector>
 #include <cmath>
+#include <algorithm>
+#include <cstddef>
 
 static inline double Lerp(double v0, double v1, double t)
 {
