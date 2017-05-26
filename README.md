@@ -1,12 +1,12 @@
-# MADMariadbUDF [![Build Status](https://travis-ci.org/Shelnutt2/MADMariadbUDF.svg?branch=master)](https://travis-ci.org/Shelnutt2/MADMariadbUDF) [![Coverage Status](https://coveralls.io/repos/github/Shelnutt2/MADMariadbUDF/badge.svg?branch=master)](https://coveralls.io/github/Shelnutt2/MADMariadbUDF?branch=master)
+# Mariadb-Statistical-UDFs  [![Build Status](https://travis-ci.org/Shelnutt2/Mariadb-Statistical-UDFs.svg?branch=master)](https://travis-ci.org/Shelnutt2/Mariadb-Statistical-UDFs ) [![Coverage Status](https://coveralls.io/repos/github/Shelnutt2/Mariadb-Statistical-UDFs/badge.svg?branch=master)](https://coveralls.io/github/Shelnutt2/Mariadb-Statistical-UDFs?branch=master)
 
 A User Defined Function which computes the Median absolute deviation
 
 ## Building
 
 ```sh
-git clone https://github.com/Shelnutt2/MADMariadbUDF.git
-cd MADMariadbUDF
+git clone https://github.com/Shelnutt2/Mariadb-Statistical-UDFs.git
+cd Mariadb-Statistical-UDFs
 mkdir build
 cd build
 cmake ..
