@@ -11,6 +11,10 @@
 #include <vector>
 #include <algorithm>
 
+#ifdef __clang__
+#include <cstdlib>
+#endif
+
 // Get the median of an unordered set of numbers of arbitrary
 // type (this will modify the underlying dataset).
 template <typename T>
