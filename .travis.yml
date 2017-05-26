@@ -20,6 +20,7 @@ script:
   - cmake -DCMAKE_BUILD_TYPE=Debug .. && make
   - make test
   - make mad_tests_coverage
+  - make quantile_tests_coverage
   - sudo make install
   - mysql -uroot < ../install.sql
   - cd ../tests
