@@ -70,21 +70,21 @@ my_bool quantile_init( UDF_INIT* initid, UDF_ARGS* args, char* message )
     return 1;
   }
 
-  if (args->arg_type[0]!=REAL_RESULT && args->arg_type[0]!=INT_RESULT)
+  if (args->arg_type[0]!=REAL_RESULT && args->arg_type[0]!=INT_RESULT && args->arg_type[0]!=DECIMAL_RESULT)
   {
     if (args->arg_type[0] == STRING_RESULT)
-      strcpy(message,"quantile() requires a real or integer as parameter 1, received STRING");
+      strcpy(message,"quantile() requires a real, decimal, double or integer as parameter 1, received STRING");
     else
-      strcpy(message,"quantile() requires a real or integer as parameter 1, received Decimal");
+      strcpy(message,"quantile() requires a real, decimal, double or integer as parameter 1, received Decimal");
     return 1;
   }
 
-  if (args->arg_type[1]!=REAL_RESULT && args->arg_type[1]!=INT_RESULT)
+  if (args->arg_type[1]!=REAL_RESULT && args->arg_type[1]!=INT_RESULT && args->arg_type[1]!=DECIMAL_RESULT)
   {
     if (args->arg_type[1] == STRING_RESULT)
-      strcpy(message,"quantile() requires a real or integer as parameter 2, received STRING");
+      strcpy(message,"quantile() requires a real, decimal, double or integer as parameter 2, received STRING");
     else
-      strcpy(message,"quantile() requires a real or integer as parameter 2, received Decimal");
+      strcpy(message,"quantile() requires a real, decimal, double or integer as parameter 2, received unknown");
     return 1;
   }
 
