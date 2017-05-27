@@ -19,10 +19,10 @@ ADD_LIBRARY(quantile_udf MODULE src/quantile_udf.cpp)
 
 install(TARGETS quantile_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/mysql/plugin" COMPONENT libraries)
 
-#project(outliers_udf)
-#ADD_LIBRARY(outliers_udf MODULE src/outliers_udf.cpp)
-#
-#install(TARGETS outliers_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/mysql/plugin" COMPONENT libraries)
+project(outliers_udf)
+ADD_LIBRARY(outliers_udf MODULE src/outliers_udf.cpp)
+
+install(TARGETS outliers_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/mysql/plugin" COMPONENT libraries)
 
 # Unit Tests
 enable_testing()

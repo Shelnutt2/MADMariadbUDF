@@ -25,3 +25,9 @@ mysql_quantile_double_test2=$(mysql -uroot -ss test -e "select quantile(value, 0
 assert $mysql_quantile_int_test 5
 assert $mysql_quantile_double_test 51
 assert $mysql_quantile_double_test2 55
+
+mysql_mean_no_outliers_int_test=$(mysql -uroot -ss test -e "select mean_no_outliers(value) FROM test_int_outlier;")
+mysql_mean_no_outliers_double_test=$(mysql -uroot -ss test -e "select mean_no_outliers(value) FROM test_double_outlier;")
+
+assert $mysql_mean_no_outliers_int_test 5
+assert $mysql_mean_no_outliers_double_test 53.5

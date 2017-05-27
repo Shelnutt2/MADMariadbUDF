@@ -33,4 +33,9 @@ std::vector<T> remove_outlier(std::vector<T> inData) {
     return data;
 }
 
+template<typename T>
+double avg(std::vector<T> const& v) {
+  return 1.0 * std::accumulate(v.begin(), v.end(), 0LL) / v.size();
+}
+
 #endif //OUTLIERS_UDF_HPP
