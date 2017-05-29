@@ -45,12 +45,14 @@ ADD_EXECUTABLE(quantile_tests tests/quantile_test.cpp)
 include_directories("include")
 create_test(quantile_tests)
 
-# Set CodeCoverage
-include(CodeCoverage)
+if(COVERAGE)
+    # Set CodeCoverage
+    include(CodeCoverage)
 
-setup_target_for_coverage(mad_tests_coverage mad_tests "coverage")
-setup_target_for_coverage(quantile_tests_coverage quantile_tests "coverage")
-setup_target_for_coverage(outlier_tests_coverage outlier_tests "coverage")
+    setup_target_for_coverage(mad_tests_coverage mad_tests "coverage")
+    setup_target_for_coverage(quantile_tests_coverage quantile_tests "coverage")
+    setup_target_for_coverage(outlier_tests_coverage outlier_tests "coverage")
+endif()
 
 ##use c++11
 
