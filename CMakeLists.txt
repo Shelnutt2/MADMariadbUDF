@@ -19,10 +19,10 @@ ADD_LIBRARY(quantile_udf MODULE src/quantile_udf.cpp)
 
 install(TARGETS quantile_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/mysql/plugin" COMPONENT libraries)
 
-#project(outliers_udf)
-#ADD_LIBRARY(outliers_udf MODULE src/outliers_udf.cpp)
-#
-#install(TARGETS outliers_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/mysql/plugin" COMPONENT libraries)
+project(outliers_udf)
+ADD_LIBRARY(outliers_udf MODULE src/outliers_udf.cpp)
+
+install(TARGETS outliers_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/mysql/plugin" COMPONENT libraries)
 
 # Unit Tests
 enable_testing()
@@ -35,6 +35,11 @@ ADD_EXECUTABLE(mad_tests tests/mad_test.cpp)
 include_directories("include")
 create_test(mad_tests)
 
+project(outlier_tests)
+ADD_EXECUTABLE(outlier_tests tests/outliers_test.cpp)
+include_directories("include")
+create_test(outlier_tests)
+
 project(quantile_tests)
 ADD_EXECUTABLE(quantile_tests tests/quantile_test.cpp)
 include_directories("include")
@@ -45,6 +50,7 @@ include(CodeCoverage)
 
 setup_target_for_coverage(mad_tests_coverage mad_tests "coverage")
 setup_target_for_coverage(quantile_tests_coverage quantile_tests "coverage")
+setup_target_for_coverage(outlier_tests_coverage outlier_tests "coverage")
 
 ##use c++11
 
