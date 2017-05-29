@@ -18,7 +18,7 @@ before_install:
 script:
   - mkdir build
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=Debug .. && make
+  - cmake -DCMAKE_BUILD_TYPE=Debug -DCOVERAGE=1 .. && make
   - make test
   - make mad_tests_coverage
   - make quantile_tests_coverage
