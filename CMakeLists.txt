@@ -12,17 +12,29 @@ link_directories(${MYSQL_LIB_DIR})
 include_directories("include")
 ADD_LIBRARY(mad_udf MODULE src/mad_udf.cpp src/median_udf.cpp)
 
-install(TARGETS mad_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/mysql/plugin" COMPONENT libraries)
+if(${MYSQL_VERSION} STRGREATER "10.2.0")
+  install(TARGETS mad_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/plugin" COMPONENT libraries)
+else()
+  install(TARGETS mad_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/mysql/plugin" COMPONENT libraries)
+endif()
 
 project(quantile_udf)
 ADD_LIBRARY(quantile_udf MODULE src/quantile_udf.cpp)
 
-install(TARGETS quantile_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/mysql/plugin" COMPONENT libraries)
+if(${MYSQL_VERSION} STRGREATER "10.2.0")
+  install(TARGETS quantile_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/plugin" COMPONENT libraries)
+else()
+  install(TARGETS quantile_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/mysql/plugin" COMPONENT libraries)
+endif()
 
-#project(outliers_udf)
-#ADD_LIBRARY(outliers_udf MODULE src/outliers_udf.cpp)
-#
-#install(TARGETS outliers_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/mysql/plugin" COMPONENT libraries)
+project(outliers_udf)
+ADD_LIBRARY(outliers_udf MODULE src/outliers_udf.cpp)
+
+if(${MYSQL_VERSION} STRGREATER "10.2.0")
+  install(TARGETS outliers_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/plugin" COMPONENT libraries)
+else()
+  install(TARGETS outliers_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/mysql/plugin" COMPONENT libraries)
+endif()
 
 # Unit Tests
 enable_testing()
@@ -35,6 +47,11 @@ ADD_EXECUTABLE(mad_tests tests/mad_test.cpp)
 include_directories("include")
 create_test(mad_tests)
 
+project(outlier_tests)
+ADD_EXECUTABLE(outlier_tests tests/outliers_test.cpp)
+include_directories("include")
+create_test(outlier_tests)
+
 project(quantile_tests)
 ADD_EXECUTABLE(quantile_tests tests/quantile_test.cpp)
 include_directories("include")
@@ -45,6 +62,7 @@ include(CodeCoverage)
 
 setup_target_for_coverage(mad_tests_coverage mad_tests "coverage")
 setup_target_for_coverage(quantile_tests_coverage quantile_tests "coverage")
+setup_target_for_coverage(outlier_tests_coverage outlier_tests "coverage")
 
 ##use c++11
 
