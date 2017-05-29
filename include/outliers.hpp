@@ -8,6 +8,8 @@
 #include <vector>
 #include <quantile.hpp>
 #include <iostream>
+#include <numeric>
+
 template<typename T>
 std::vector<T> remove_outlier(std::vector<T> inData) {
 
@@ -34,8 +36,25 @@ std::vector<T> remove_outlier(std::vector<T> inData) {
 }
 
 template<typename T>
-double avg(std::vector<T> const& v) {
-  return 1.0 * std::accumulate(v.begin(), v.end(), 0LL) / v.size();
+double avg(std::vector<T> const *v) {
+  return 1.0 * std::accumulate(v->begin(), v->end(), 0LL) / v->size();
 }
 
+
+template<typename T>
+double variance_population(std::vector<T> const *v) {
+  double mean = avg(v);
+  double temp = 0;
+
+  for (int i = 0; i < v->size(); i++) {
+    temp += (v->at(1) - mean) * (v->at(1) - mean);
+  }
+
+  return temp / v->size();
+}
+
+template<typename T>
+double stddev_population(std::vector<T> const *v) {
+  return std::sqrt(variance_population(v));
+}
 #endif //OUTLIERS_UDF_HPP

@@ -12,6 +12,7 @@ before_install:
   - gem install lcoveralls
   - mysql -e "create database IF NOT EXISTS test;" -uroot
   - mysql -uroot test < tests/test.sql
+  - export CTEST_OUTPUT_ON_FAILURE=1
 
 # Build steps
 script:

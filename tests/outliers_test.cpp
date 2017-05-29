@@ -17,6 +17,13 @@ TEST_CASE( "Outliers Double", "[outliers]" ) {
   REQUIRE(results == expected);
 }
 
+TEST_CASE( "Outliers Double - 2 Outliers", "[outliers]" ) {
+  std::vector<double> inN = {53, 55, 51, 50, 60, 52, 100, 0};
+  std::vector<double> results = remove_outlier(inN);
+  std::vector<double> expected = {53, 55, 51, 50, 60, 52};
+  REQUIRE(results == expected);
+}
+
 TEST_CASE( "Outliers Empty", "[outliers]" ) {
   std::vector<double> inN;
   std::vector<double> results = remove_outlier(inN);

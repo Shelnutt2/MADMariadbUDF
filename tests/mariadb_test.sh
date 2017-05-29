@@ -31,3 +31,9 @@ mysql_mean_no_outliers_double_test=$(mysql -uroot -ss test -e "select mean_no_ou
 
 assert $mysql_mean_no_outliers_int_test 5
 assert $mysql_mean_no_outliers_double_test 53.5
+
+mysql_stddev_no_outliers_int_test=$(mysql -uroot -ss test -e "select stddev_no_outliers(value) FROM test_int_outlier;")
+mysql_stddev_no_outliers_double_test=$(mysql -uroot -ss test -e "select stddev_no_outliers(value) FROM test_double_outlier;")
+
+assert $mysql_stddev_no_outliers_int_test 2.5820
+assert $mysql_stddev_no_outliers_double_test 3.3040379335998358
