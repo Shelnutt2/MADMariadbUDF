@@ -306,3 +306,133 @@ double stddev_no_outliers( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char
   return 0;
 }
 
+
+/*
+ *
+ * Count with outlier removal
+ *
+ */
+
+extern "C" {
+my_bool count_no_outliers_init( UDF_INIT* initid, UDF_ARGS* args, char* message );
+void count_no_outliers_deinit( UDF_INIT* initid );
+void count_no_outliers_clear( UDF_INIT* initid, char* is_null, char *error );
+void count_no_outliers_reset( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char *error );
+void count_no_outliers_add( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char *error );
+double count_no_outliers( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char *error );
+}
+
+struct count_no_outliers_data
+{
+    std::vector<double> *double_values;
+    std::vector<long long> *int_values;
+};
+
+my_bool count_no_outliers_init( UDF_INIT* initid, UDF_ARGS* args, char* message )
+{
+  if (args->arg_count != 1)
+  {
+    strcpy(message,"wrong number of arguments: count_no_outliers() requires one argument");
+    return 1;
+  }
+
+  if (args->arg_type[0]!=REAL_RESULT && args->arg_type[0]!=INT_RESULT && args->arg_type[0]!=DECIMAL_RESULT)
+  {
+    if (args->arg_type[0] == STRING_RESULT)
+      strcpy(message,"count_no_outliers() requires a real, decimal, double or integer as parameter 1, received STRING");
+    else
+      strcpy(message,"count_no_outliers() requires a real, decimal, double or integer as parameter 1, received Decimal");
+    return 1;
+  }
+
+  initid->decimals = NOT_FIXED_DEC;
+  initid->maybe_null = 1;
+
+  count_no_outliers_data *buffer = new count_no_outliers_data;
+  buffer->double_values = NULL;
+  buffer->int_values = NULL;
+  initid->ptr = (char*)buffer;
+
+  return 0;
+}
+
+
+void count_no_outliers_deinit( UDF_INIT* initid )
+{
+  count_no_outliers_data *buffer = (count_no_outliers_data*)initid->ptr;
+
+  if (buffer->double_values != NULL)
+  {
+    free(buffer->double_values);
+    buffer->double_values=NULL;
+  }
+  if (buffer->int_values != NULL)
+  {
+    free(buffer->int_values);
+    buffer->int_values=NULL;
+  }
+  delete initid->ptr;
+}
+
+
+void count_no_outliers_clear( UDF_INIT* initid, char* is_null, char* is_error )
+{
+  count_no_outliers_data *buffer = (count_no_outliers_data*)initid->ptr;
+  *is_null = 0;
+  *is_error = 0;
+
+  if (buffer->double_values != NULL)
+  {
+    free(buffer->double_values);
+    buffer->double_values=NULL;
+  }
+  if (buffer->int_values != NULL)
+  {
+    free(buffer->int_values);
+    buffer->int_values=NULL;
+  }
+
+  buffer->double_values = new std::vector<double>;
+  buffer->int_values = new std::vector<long long>;
+
+}
+
+
+void count_no_outliers_reset( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char* is_error )
+{
+  count_no_outliers_clear(initid, is_null, is_error);
+  count_no_outliers_add( initid, args, is_null, is_error );
+}
+
+
+void count_no_outliers_add( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char* is_error )
+{
+  if (args->args[0]!=NULL)
+  {
+    count_no_outliers_data *buffer = (count_no_outliers_data*)initid->ptr;
+    if (args->arg_type[0]==REAL_RESULT || args->arg_type[0]==DECIMAL_RESULT)
+    {
+      buffer->double_values->push_back(*((double*)args->args[0]));
+    }
+    else if (args->arg_type[0]==INT_RESULT)
+    {
+      buffer->int_values->push_back(*((long long*)args->args[0]));
+    }
+  }
+}
+
+double count_no_outliers( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char* is_error )
+{
+  count_no_outliers_data* buffer = (count_no_outliers_data*)initid->ptr;
+
+  if (buffer->double_values != NULL && buffer->double_values->size() > 0) {
+    std::vector<double> outliers_removed = remove_outlier(*buffer->double_values);
+    return outliers_removed.size();
+  } else if (buffer->int_values != NULL && buffer->int_values->size() > 0) {
+    std::vector<long long> outliers_removed = remove_outlier(*buffer->int_values);
+    return outliers_removed.size();
+  }
+  std::cerr << "count_no_outliers() internal error, all vectors were null in computation" << std::endl;
+  *is_error = 1;
+  return 0;
+}
