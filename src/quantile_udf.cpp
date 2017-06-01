@@ -106,12 +106,12 @@ void quantile_deinit( UDF_INIT* initid )
 
   if (buffer->double_values != NULL)
   {
-    free(buffer->double_values);
+    delete buffer->double_values;
     buffer->double_values=NULL;
   }
   if (buffer->int_values != NULL)
   {
-    free(buffer->int_values);
+    delete buffer->int_values;
     buffer->int_values=NULL;
   }
   delete initid->ptr;
@@ -126,12 +126,12 @@ void quantile_clear( UDF_INIT* initid, char* is_null, char* is_error )
 
   if (buffer->double_values != NULL)
   {
-    free(buffer->double_values);
+    delete buffer->double_values;
     buffer->double_values=NULL;
   }
   if (buffer->int_values != NULL)
   {
-    free(buffer->int_values);
+    delete buffer->int_values;
     buffer->int_values=NULL;
   }
 

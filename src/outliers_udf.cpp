@@ -98,12 +98,12 @@ void mean_no_outliers_deinit( UDF_INIT* initid )
 
   if (buffer->double_values != NULL)
   {
-    free(buffer->double_values);
+    delete buffer->double_values;
     buffer->double_values=NULL;
   }
   if (buffer->int_values != NULL)
   {
-    free(buffer->int_values);
+    delete buffer->int_values;
     buffer->int_values=NULL;
   }
   delete initid->ptr;
@@ -118,12 +118,12 @@ void mean_no_outliers_clear( UDF_INIT* initid, char* is_null, char* is_error )
 
   if (buffer->double_values != NULL)
   {
-    free(buffer->double_values);
+    delete buffer->double_values;
     buffer->double_values=NULL;
   }
   if (buffer->int_values != NULL)
   {
-    free(buffer->int_values);
+    delete buffer->int_values;
     buffer->int_values=NULL;
   }
 
@@ -152,7 +152,12 @@ void mean_no_outliers_add( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char
     else if (args->arg_type[0]==INT_RESULT)
     {
       buffer->int_values->push_back(*((long long*)args->args[0]));
+    } else {
+     // std::cerr << "mean_no_outliers() Error in adding type was not real( " << REAL_RESULT << "), decimal("
+       //         << DECIMAL_RESULT << ") or int(" << INT_RESULT << ")!! instead got: " << args->arg_type[0] << std::endl;
     }
+  } else {
+   // std::cerr << "mean_no_outliers() Argument in add received is null!" << std::endl;
   }
 }
 
@@ -169,7 +174,7 @@ double mean_no_outliers( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char* 
   } else {
     std::cerr << "mean_no_outliers() internal error, all vectors were null in computation" << std::endl;
     *is_null = 1;
-    *is_error = 1;
+//    *is_error = 1;
   }
   return 0;
 }
@@ -230,12 +235,12 @@ void stddev_no_outliers_deinit( UDF_INIT* initid )
 
   if (buffer->double_values != NULL)
   {
-    free(buffer->double_values);
+    delete buffer->double_values;
     buffer->double_values=NULL;
   }
   if (buffer->int_values != NULL)
   {
-    free(buffer->int_values);
+    delete buffer->int_values;
     buffer->int_values=NULL;
   }
   delete initid->ptr;
@@ -250,12 +255,12 @@ void stddev_no_outliers_clear( UDF_INIT* initid, char* is_null, char* is_error )
 
   if (buffer->double_values != NULL)
   {
-    free(buffer->double_values);
+    delete buffer->double_values;
     buffer->double_values=NULL;
   }
   if (buffer->int_values != NULL)
   {
-    free(buffer->int_values);
+    delete buffer->int_values;
     buffer->int_values=NULL;
   }
 
@@ -300,7 +305,7 @@ double stddev_no_outliers( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char
   } else {
     std::cerr << "stddev_no_outliers() internal error, all vectors were null in computation" << std::endl;
     *is_null = 1;
-    *is_error = 1;
+   // *is_error = 1;
   }
   return 0;
 }
@@ -362,12 +367,12 @@ void count_no_outliers_deinit( UDF_INIT* initid )
 
   if (buffer->double_values != NULL)
   {
-    free(buffer->double_values);
+    delete buffer->double_values;
     buffer->double_values=NULL;
   }
   if (buffer->int_values != NULL)
   {
-    free(buffer->int_values);
+    delete buffer->int_values;
     buffer->int_values=NULL;
   }
   delete initid->ptr;
@@ -382,12 +387,12 @@ void count_no_outliers_clear( UDF_INIT* initid, char* is_null, char* is_error )
 
   if (buffer->double_values != NULL)
   {
-    free(buffer->double_values);
+    delete buffer->double_values;
     buffer->double_values=NULL;
   }
   if (buffer->int_values != NULL)
   {
-    free(buffer->int_values);
+    delete buffer->int_values;
     buffer->int_values=NULL;
   }
 
@@ -433,7 +438,7 @@ double count_no_outliers( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char*
   } else {
     std::cerr << "count_no_outliers() internal error, all vectors were null in computation" << std::endl;
     *is_null = 1;
-    *is_error = 1;
+  //  *is_error = 1;
   }
   return 0;
 }
