@@ -175,10 +175,10 @@ double quantile( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char* is_error
   quantile_data* buffer = (quantile_data*)initid->ptr;
 
   if (buffer->double_values != NULL && buffer->double_values->size() > 0) {
-    std::vector<double> quantile = Quantile(*buffer->double_values, {buffer->quantile});
+    std::vector<double> quantile = Quantile(buffer->double_values, {buffer->quantile});
     return quantile[0];
   } else if (buffer->int_values != NULL && buffer->int_values->size() > 0) {
-    std::vector<long long> quantile = Quantile(*buffer->int_values, {buffer->quantile});
+    std::vector<long long> quantile = Quantile(buffer->int_values, {buffer->quantile});
     return quantile[0];
   }
   std::cerr << "quantile() internal error, all vectors were null in computation" << std::endl;
