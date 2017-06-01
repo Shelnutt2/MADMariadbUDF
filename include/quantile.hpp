@@ -16,7 +16,7 @@ static inline double Lerp(double v0, double v1, double t)
 }
 
 template<typename T>
-static inline std::vector<T> Quantile(std::vector<T> *inData, const std::vector<double>& probs) {
+static std::vector<T> Quantile(std::vector<T> *inData, const std::vector<double>& probs) {
   if (inData->empty()) {
     return std::vector<T>();
   }
