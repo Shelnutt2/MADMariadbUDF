@@ -1,6 +1,6 @@
-DROP FUNCTION mad;
-DROP FUNCTION median;
-DROP FUNCTION quantile;
-DROP FUNCTION mcount_no_outliers;
-DROP FUNCTION mean_no_outliers;
-DROP FUNCTION stddev_no_outliers;
+DROP FUNCTION IF EXISTS mad;
+DROP FUNCTION IF EXISTS median;
+DROP FUNCTION IF EXISTS quantile;
+DROP FUNCTION IF EXISTS count_no_outliers;
+DROP FUNCTION IF EXISTS mean_no_outliers;
+DROP FUNCTION IF EXISTS stddev_no_outliers;

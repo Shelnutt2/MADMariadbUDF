@@ -16,27 +16,26 @@ static inline double Lerp(double v0, double v1, double t)
 }
 
 template<typename T>
-static inline std::vector<T> Quantile(const std::vector<T>& inData, const std::vector<double>& probs) {
-  if (inData.empty()) {
+static std::vector<T> Quantile(std::vector<T> *inData, const std::vector<double>& probs) {
+  if (inData->empty()) {
     return std::vector<T>();
   }
 
-  if (1 == inData.size()) {
-    return std::vector<T>(1, inData[0]);
+  if (1 == inData->size()) {
+    return std::vector<T>(1, inData->at(0));
   }
 
-  std::vector <T> data = inData;
-  std::sort(data.begin(), data.end());
+  std::sort(inData->begin(), inData->end());
   std::vector <T> quantiles;
 
   for (size_t i = 0; i < probs.size(); ++i) {
-    T poi = Lerp(-0.5, data.size() - 0.5, probs[i]);
+    T poi = Lerp(-0.5, inData->size() - 0.5, probs[i]);
 
     size_t left = std::max(int64_t(std::floor(poi)), int64_t(0));
-    size_t right = std::min(int64_t(std::ceil(poi)), int64_t(data.size() - 1));
+    size_t right = std::min(int64_t(std::ceil(poi)), int64_t(inData->size() - 1));
 
-    T datLeft = data.at(left);
-    T datRight = data.at(right);
+    T datLeft = inData->at(left);
+    T datRight = inData->at(right);
 
     T quantile = Lerp(datLeft, datRight, poi - left);
 

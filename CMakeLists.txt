@@ -12,28 +12,28 @@ link_directories(${MYSQL_LIB_DIR})
 include_directories("include")
 ADD_LIBRARY(mad_udf MODULE src/mad_udf.cpp src/median_udf.cpp)
 
-if(${MYSQL_VERSION} STRGREATER "10.2.0")
-  install(TARGETS mad_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/plugin" COMPONENT libraries)
-else()
+if(${MYSQL_LIB_DIR} STREQUAL "/usr/lib")
   install(TARGETS mad_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/mysql/plugin" COMPONENT libraries)
+else()
+  install(TARGETS mad_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/plugin" COMPONENT libraries)
 endif()
 
 project(quantile_udf)
 ADD_LIBRARY(quantile_udf MODULE src/quantile_udf.cpp)
 
-if(${MYSQL_VERSION} STRGREATER "10.2.0")
-  install(TARGETS quantile_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/plugin" COMPONENT libraries)
-else()
+if(${MYSQL_LIB_DIR} STREQUAL "/usr/lib")
   install(TARGETS quantile_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/mysql/plugin" COMPONENT libraries)
+else()
+  install(TARGETS quantile_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/plugin" COMPONENT libraries)
 endif()
 
 project(outliers_udf)
 ADD_LIBRARY(outliers_udf MODULE src/outliers_udf.cpp)
 
-if(${MYSQL_VERSION} STRGREATER "10.2.0")
-  install(TARGETS outliers_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/plugin" COMPONENT libraries)
-else()
+if(${MYSQL_LIB_DIR} STREQUAL "/usr/lib")
   install(TARGETS outliers_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/mysql/plugin" COMPONENT libraries)
+else()
+  install(TARGETS outliers_udf LIBRARY DESTINATION "${MYSQL_LIB_DIR}/plugin" COMPONENT libraries)
 endif()
 
 # Unit Tests

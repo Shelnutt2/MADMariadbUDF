@@ -10,36 +10,49 @@
 #include <iostream>
 #include <numeric>
 
+/**
+ *
+ *
+ * @tparam T
+ * @param inData std::vector<T>
+ * @return void return
+ */
 template<typename T>
-std::vector<T> remove_outlier(std::vector<T> inData) {
+void remove_outliers(std::vector<T> *inData) {
 
-    if(inData.size() < 2) {
-      return inData;
+    if(inData == NULL) {
+      return;
     }
-    std::vector<T> data;
+    if(inData->size() < 2) {
+      return;
+    }
 
     std::vector<T> quantiles = Quantile(inData, {0.25, 0.75});
     T IQR = quantiles[1] - quantiles[0];
 
-    for(T dataPoint : inData) {
+  // curFiles is: vector < string > curFiles;
+
+  typename std::vector<T>::iterator it = inData->begin();
+
+  while(it != inData->end()) {
         // We want to exclude all data that is outside the range, and is an outlier.
         // We are excluding things that are < (Q1 - 1.5*IQR) AND > (Q3 + 1.5*IQR)
-        if((dataPoint > (quantiles[0] - (1.5 * IQR))) && (dataPoint < (quantiles[1] + (1.5 * IQR)))) {
-            data.push_back(dataPoint);
+        if((*it < (quantiles[0] - (1.5 * IQR))) || (*it > (quantiles[1] + (1.5 * IQR)))) {
+          it = inData->erase(it);
+        } else {
+          it++;
         }
     }
-
-    return data;
 }
 
 template<typename T>
-double avg(std::vector<T> const *v) {
+double avg(std::vector<T> *v) {
   return 1.0 * std::accumulate(v->begin(), v->end(), 0LL) / v->size();
 }
 
 
 template<typename T>
-double variance_population(std::vector<T> const *v) {
+double variance_population(std::vector<T> *v) {
   double mean = avg(v);
   double temp = 0;
 
@@ -51,7 +64,7 @@ double variance_population(std::vector<T> const *v) {
 }
 
 template<typename T>
-double stddev_population(std::vector<T> const *v) {
+double stddev_population(std::vector<T> *v) {
   return std::sqrt(variance_population(v));
 }
 #endif //OUTLIERS_UDF_HPP
