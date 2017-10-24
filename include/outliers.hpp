@@ -34,15 +34,31 @@ void remove_outliers(std::vector<T> *inData) {
 
   typename std::vector<T>::iterator it = inData->begin();
 
-  while(it != inData->end()) {
-        // We want to exclude all data that is outside the range, and is an outlier.
-        // We are excluding things that are < (Q1 - 1.5*IQR) AND > (Q3 + 1.5*IQR)
-        if((*it < (quantiles[0] - (1.5 * IQR))) || (*it > (quantiles[1] + (1.5 * IQR)))) {
-          it = inData->erase(it);
-        } else {
-          it++;
-        }
-    }
+  T lowerThreshold = quantiles[0] - (1.5 * IQR);
+  T upperThreshold = quantiles[1] + (1.5 * IQR);
+  /**
+   * We want to exclude all data that is outside the range, and is an outlier.
+   * We are excluding things that are < (Q1 - 1.5*IQR) AND > (Q3 + 1.5*IQR)
+   * First loop through data starting at bottom of sorted vector
+   * Once we have a value larger then the lower threshold stop and we'll start again in reverse
+   * We can avoid iterating over the large number of non-outlier values
+   **/
+  while(it < inData->end()) {
+    if(*it < lowerThreshold)
+      it = inData->erase(it);
+    else
+      break;
+  }
+  //Loop through values in descending order
+  it = inData->end();
+  while (it > inData->begin())
+  {
+    it--;
+    if(*it >= upperThreshold)
+      it = inData->erase(it);
+    else
+      break;
+  }
 }
 
 template<typename T>
