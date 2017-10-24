@@ -47,7 +47,7 @@ void remove_outliers(std::vector<T> *inData) {
 
 template<typename T>
 double avg(std::vector<T> *v) {
-  return 1.0 * std::accumulate(v->begin(), v->end(), 0LL) / v->size();
+  return 1.0 * std::accumulate(v->begin(), v->end(), (T)0) / v->size();
 }
 
 
