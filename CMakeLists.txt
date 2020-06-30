@@ -66,6 +66,26 @@ if(COVERAGE)
     setup_target_for_coverage(outlier_tests_coverage outlier_tests "coverage")
 endif()
 
-##use c++11
-
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG} -Wall -g -fprofile-arcs -ftest-coverage -O0 -coverage")
+
+############################################################
+# "make format" and "make check-format" targets
+############################################################
+
+set(SCRIPTS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/scripts")
+
+find_package(ClangTools)
+if (${CLANG_FORMAT_FOUND})
+  # runs clang format and updates files in place.
+  add_custom_target(format ${SCRIPTS_DIR}/run-clang-format.sh ${CMAKE_CURRENT_SOURCE_DIR} ${CLANG_FORMAT_BIN} 1
+    `find ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    -name \\*.cc -or -name \\*.cpp -or -name \\*.c -or -name \\*.h -or -name
+    \\*.hpp`)
+
+  # runs clang format and exits with a non-zero exit code if any files need to be reformatted
+  add_custom_target(check-format ${SCRIPTS_DIR}/run-clang-format.sh ${CMAKE_CURRENT_SOURCE_DIR} ${CLANG_FORMAT_BIN} 0
+    `find ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    -name \\*.cc -or -name \\*.cpp -or -name \\*.c -or -name \\*.h -or -name \\*.hpp`)
+endif()
