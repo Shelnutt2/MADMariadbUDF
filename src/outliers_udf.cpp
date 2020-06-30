@@ -1,5 +1,3 @@
-
-
 /*
 
   Copyright Seth Shelnutt 2017-05-26
@@ -22,24 +20,11 @@
   DROP FUNCTION mean_no_outliers;
 */
 
-
-#ifdef STANDARD
+#include <mysql.h>
 #include <stdio.h>
 #include <string.h>
-#ifdef __WIN__
-typedef unsigned __int64 ulonglong;
-typedef __int64 longlong;
-#else
-typedef unsigned long long ulonglong;
-typedef long long longlong;
-#endif /*__WIN__*/
-#else
-#include <my_global.h>
-#include <my_sys.h>
-#endif
 #include <vector>
 #include <iostream>
-#include <mysql.h>
 #include <outliers.hpp>
 
 /*

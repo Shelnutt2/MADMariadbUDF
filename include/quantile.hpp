@@ -9,6 +9,7 @@
 #include <cmath>
 #include <algorithm>
 #include <cstddef>
+#include <common.hpp>
 
 static inline double Lerp(double v0, double v1, double t)
 {

@@ -9,6 +9,7 @@
 #include <quantile.hpp>
 #include <iostream>
 #include <numeric>
+#include <common.hpp>
 
 /**
  *

@@ -10,6 +10,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <common.hpp>
 
 #ifdef __clang__
 #include <cstdlib>

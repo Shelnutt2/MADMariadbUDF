@@ -18,29 +18,13 @@
   DROP FUNCTION mad;
 */
 
-
-#ifdef STANDARD
+#include <mysql.h>
 #include <stdio.h>
 #include <string.h>
-#ifdef __WIN__
-typedef unsigned __int64 ulonglong;
-typedef __int64 longlong;
-#else
-typedef unsigned long long ulonglong;
-typedef long long longlong;
-#endif /*__WIN__*/
-#else
-#include <my_global.h>
-#include <my_sys.h>
-#endif
 #include <vector>
 #include <iostream>
 #include <algorithm>
-#include <mysql.h>
-#include <m_ctype.h>
-#include <m_string.h>
 #include <mad.hpp>
-
 
 extern "C" {
 my_bool mad_init( UDF_INIT* initid, UDF_ARGS* args, char* message );
