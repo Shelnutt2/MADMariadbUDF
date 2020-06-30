@@ -18,44 +18,45 @@
   DROP FUNCTION mad;
 */
 
+#include <algorithm>
+#include <iostream>
+#include <mad.hpp>
 #include <mysql.h>
 #include <stdio.h>
 #include <string.h>
 #include <vector>
-#include <iostream>
-#include <algorithm>
-#include <mad.hpp>
 
 extern "C" {
-my_bool mad_init( UDF_INIT* initid, UDF_ARGS* args, char* message );
-void mad_deinit( UDF_INIT* initid );
-void mad_clear( UDF_INIT* initid, char* is_null, char *error );
-void mad_reset( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char *error );
-void mad_add( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char *error );
-double mad( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char *error );
-/*long long mad( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char *error );*/
+my_bool mad_init(UDF_INIT *initid, UDF_ARGS *args, char *message);
+void mad_deinit(UDF_INIT *initid);
+void mad_clear(UDF_INIT *initid, char *is_null, char *error);
+void mad_reset(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error);
+void mad_add(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error);
+double mad(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error);
+/*long long mad( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char *error
+ * );*/
 }
 
-struct mad_data
-{
+struct mad_data {
   std::vector<double> *double_values;
   std::vector<long long> *int_values;
 };
 
-my_bool mad_init( UDF_INIT* initid, UDF_ARGS* args, char* message )
-{
-  if (args->arg_count != 1)
-  {
-    strcpy(message,"wrong number of arguments: mad() requires one argument");
+my_bool mad_init(UDF_INIT *initid, UDF_ARGS *args, char *message) {
+  if (args->arg_count != 1) {
+    strcpy(message, "wrong number of arguments: mad() requires one argument");
     return 1;
   }
 
-  if (args->arg_type[0]!=REAL_RESULT && args->arg_type[0]!=INT_RESULT && args->arg_type[0] != DECIMAL_RESULT)
-  {
+  if (args->arg_type[0] != REAL_RESULT && args->arg_type[0] != INT_RESULT &&
+      args->arg_type[0] != DECIMAL_RESULT) {
     if (args->arg_type[0] == STRING_RESULT)
-      strcpy(message,"mad() requires a real or integer as parameter 1, received STRING");
+      strcpy(
+          message,
+          "mad() requires a real or integer as parameter 1, received STRING");
     else
-      strcpy(message,"mad() requires a decimal, real or integer as parameter 1");
+      strcpy(message,
+             "mad() requires a decimal, real or integer as parameter 1");
     return 1;
   }
 
@@ -65,86 +66,71 @@ my_bool mad_init( UDF_INIT* initid, UDF_ARGS* args, char* message )
   mad_data *buffer = new mad_data;
   buffer->double_values = NULL;
   buffer->int_values = NULL;
-  initid->ptr = (char*)buffer;
+  initid->ptr = (char *)buffer;
 
   return 0;
 }
 
+void mad_deinit(UDF_INIT *initid) {
+  mad_data *buffer = (mad_data *)initid->ptr;
 
-void mad_deinit( UDF_INIT* initid )
-{
-  mad_data *buffer = (mad_data*)initid->ptr;
-
-  if (buffer->double_values != NULL)
-  {
+  if (buffer->double_values != NULL) {
     delete buffer->double_values;
-    buffer->double_values=NULL;
+    buffer->double_values = NULL;
   }
-  if (buffer->int_values != NULL)
-  {
+  if (buffer->int_values != NULL) {
     delete buffer->int_values;
-    buffer->int_values=NULL;
+    buffer->int_values = NULL;
   }
   delete initid->ptr;
 }
 
-
-void mad_clear( UDF_INIT* initid, char* is_null, char* is_error )
-{
-  mad_data *buffer = (mad_data*)initid->ptr;
+void mad_clear(UDF_INIT *initid, char *is_null, char *is_error) {
+  mad_data *buffer = (mad_data *)initid->ptr;
   *is_null = 0;
   *is_error = 0;
 
-  if (buffer->double_values != NULL)
-  {
+  if (buffer->double_values != NULL) {
     delete buffer->double_values;
-    buffer->double_values=NULL;
+    buffer->double_values = NULL;
   }
-  if (buffer->int_values != NULL)
-  {
+  if (buffer->int_values != NULL) {
     delete buffer->int_values;
-    buffer->int_values=NULL;
+    buffer->int_values = NULL;
   }
 
   buffer->double_values = new std::vector<double>;
   buffer->int_values = new std::vector<long long>;
-
 }
 
-
-void mad_reset( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char* is_error )
-{
+void mad_reset(UDF_INIT *initid, UDF_ARGS *args, char *is_null,
+               char *is_error) {
   mad_clear(initid, is_null, is_error);
-  mad_add( initid, args, is_null, is_error );
+  mad_add(initid, args, is_null, is_error);
 }
 
-
-void mad_add( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char* is_error )
-{
-  if (args->args[0]!=NULL)
-  {
-    mad_data *buffer = (mad_data*)initid->ptr;
-    if (args->arg_type[0]==REAL_RESULT || args->arg_type[0]==DECIMAL_RESULT)
-    {
-      buffer->double_values->push_back(*((double*)args->args[0]));
-    }
-    else if (args->arg_type[0]==INT_RESULT)
-    {
-      buffer->int_values->push_back(*((long long*)args->args[0]));
+void mad_add(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *is_error) {
+  if (args->args[0] != NULL) {
+    mad_data *buffer = (mad_data *)initid->ptr;
+    if (args->arg_type[0] == REAL_RESULT ||
+        args->arg_type[0] == DECIMAL_RESULT) {
+      buffer->double_values->push_back(*((double *)args->args[0]));
+    } else if (args->arg_type[0] == INT_RESULT) {
+      buffer->int_values->push_back(*((long long *)args->args[0]));
     }
   }
 }
 
-double mad( UDF_INIT* initid, UDF_ARGS* args, char* is_null, char* is_error )
-{
-  mad_data* buffer = (mad_data*)initid->ptr;
+double mad(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *is_error) {
+  mad_data *buffer = (mad_data *)initid->ptr;
   double mad;
   if (buffer->double_values != NULL && buffer->double_values->size() > 0) {
     mad = Mad(buffer->double_values);
   } else if (buffer->int_values != NULL && buffer->int_values->size() > 0) {
     mad = Mad(buffer->int_values);
   } else {
-    std::cerr << "mad() internal error, all vectors were null in computation" << std::endl;
+    std::cerr << "mad() internal error, all vectors were null in computation"
+              << std::endl;
     *is_error = 1;
   }
   return mad;

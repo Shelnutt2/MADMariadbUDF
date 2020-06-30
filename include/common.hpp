@@ -10,7 +10,7 @@
 #define __COMMON_HPP
 
 #define FLOATING_POINT_DECIMALS 31
-#define NOT_FIXED_DEC           FLOATING_POINT_DECIMALS
+#define NOT_FIXED_DEC FLOATING_POINT_DECIMALS
 #ifdef __WIN__
 typedef unsigned __int64 ulonglong;
 typedef __int64 longlong;
@@ -18,6 +18,5 @@ typedef __int64 longlong;
 typedef unsigned long long ulonglong;
 typedef long long longlong;
 #endif /*__WIN__*/
-
 
 #endif
